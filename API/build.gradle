@@ -1,0 +1,54 @@
+apply plugin: 'maven-publish'
+
+version = '1.0.0'
+archivesBaseName = 'Hyreos-API'
+
+java {
+    withSourcesJar()
+    withJavadocJar()
+
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            pom {
+                groupId = project.group
+                artifactId = 'hyreos-api'
+                version = project.version
+                name = 'HyreosAPI'
+                description = 'Official API of Hyreos'
+                url = 'https://github.com/Hyriode/Hyreos'
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username System.getenv('USERNAME')
+                password System.getenv('TOKEN')
+            }
+            name = "Hyreos_maven"
+            url = "https://maven.pkg.github.com/Hyriode/Hyreos"
+        }
+    }
+}
+
+dependencies {
+    api 'redis.clients:jedis:4.3.0'
+}
