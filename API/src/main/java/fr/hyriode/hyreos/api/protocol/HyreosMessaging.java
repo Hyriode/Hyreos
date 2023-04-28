@@ -43,7 +43,7 @@ public class HyreosMessaging {
         this.subscriberThread = new Thread(() -> {
             System.out.println("Starting " + HyreosAPI.NAME + " messaging...");
 
-            this.hyreosAPI.redisProcess(jedis -> jedis.subscribe(this.subscriber, CHANNEL));
+            this.hyreosAPI.processWithRedis(jedis -> jedis.subscribe(this.subscriber, CHANNEL));
         });
         this.subscriberThread.start();
     }
@@ -67,7 +67,7 @@ public class HyreosMessaging {
      * @param packet The {@link HyreosPacket}
      */
     public void sendPacket(HyreosPacket packet) {
-        this.hyreosAPI.redisProcess(jedis -> jedis.publish(CHANNEL, this.encodePacket(packet)));
+        this.hyreosAPI.processWithRedis(jedis -> jedis.publish(CHANNEL, this.encodePacket(packet)));
     }
 
     /**

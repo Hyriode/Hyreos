@@ -29,5 +29,4 @@ public class HyreosMetricsManager {
     public void writeMetric(HyreosMetric metric) {
         this.hyreosAPI.getMessaging().sendPacket(new HyreosMetricPacket(metric));
     }
-
 }

@@ -21,7 +21,7 @@ public class HyreosAPI {
     /** The {@linkplain HyreosMetricsManager metrics' manager} */
     private HyreosMetricsManager metricsManager;
 
-    /** The required {@link JedisPool} to use {@link redis.clients.jedis.JedisPubSub} system */
+    /** The required {@link JedisPool} to use {@link redis.clients.jedis.JedisPubSub JedisPubSub} system */
     private final JedisPool jedisPool;
 
     /**
@@ -55,12 +55,12 @@ public class HyreosAPI {
     /**
      * Query a {@linkplain Jedis Redis resource} to perform action
      *
-     * @param jedisConsumer The consumer that will be triggered after accessing to the {@linkplain Jedis resource}
+     * @param consumer The consumer that will be triggered after accessing to the {@linkplain Jedis resource}
      */
-    public void redisProcess(Consumer<Jedis> jedisConsumer) {
+    public void processWithRedis(Consumer<Jedis> consumer) {
         try (final Jedis jedis = this.jedisPool.getResource()) {
             if (jedis != null) {
-                jedisConsumer.accept(jedis);
+                consumer.accept(jedis);
             }
         }
     }

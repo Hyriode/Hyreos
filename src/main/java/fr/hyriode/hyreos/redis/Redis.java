@@ -1,7 +1,7 @@
 package fr.hyriode.hyreos.redis;
 
 import fr.hyriode.hyreos.api.HyreosAPI;
-import fr.hyriode.hyreos.config.RedisConfig;
+import fr.hyriode.hyreos.config.nested.RedisConfig;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
@@ -20,14 +20,10 @@ public class Redis {
 
     private JedisPool jedisPool;
 
-    private final String hostname;
-    private final int port;
-    private final String password;
+    private final RedisConfig config;
 
     public Redis(RedisConfig config) {
-        this.hostname = config.getHostname();
-        this.port = config.getPort();
-        this.password = config.getPassword();
+        this.config = config;
 
         this.start();
     }
@@ -49,12 +45,21 @@ public class Redis {
     }
 
     private void connect() {
-        final JedisPoolConfig config = new JedisPoolConfig();
+        final JedisPoolConfig poolConfig = new JedisPoolConfig();
 
-        config.setMaxTotal(-1);
-        config.setJmxEnabled(false);
+        poolConfig.setMaxIdle(0);
+        poolConfig.setMaxTotal(-1);
+        poolConfig.setJmxEnabled(false);
 
-        this.jedisPool = new JedisPool(config, this.hostname, this.port, 2000, this.password);
+        final String hostname = this.config.getHostname();
+        final int port = this.config.getPort();
+        final String password = this.config.getPassword();
+
+        if (password != null && !password.isEmpty()) {
+            this.jedisPool = new JedisPool(poolConfig, hostname, port, 2000, password);
+        } else {
+            this.jedisPool = new JedisPool(poolConfig, hostname, port, 2000);
+        }
 
         try {
             this.jedisPool.getResource().close();

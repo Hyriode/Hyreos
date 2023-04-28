@@ -26,16 +26,6 @@ public class HyreosMetric {
     }
 
     /**
-     * Create a {@link HyreosMetric} object from its name
-     *
-     * @param name The name of the {@link HyreosMetric} to create
-     * @return The created {@link HyreosMetric}
-     */
-    public static HyreosMetric of(String name) {
-        return new HyreosMetric(name);
-    }
-
-    /**
      * Get the name of the metric
      *
      * @return A name

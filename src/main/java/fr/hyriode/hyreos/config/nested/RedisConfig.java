@@ -1,4 +1,4 @@
-package fr.hyriode.hyreos.config;
+package fr.hyriode.hyreos.config.nested;
 
 /**
  * Created by AstFaster
@@ -7,20 +7,24 @@ package fr.hyriode.hyreos.config;
 public class RedisConfig {
 
     private final String hostname;
-    private final int port;
+    private final short port;
     private final String password;
 
-    public RedisConfig(String hostname, int port, String password) {
+    public RedisConfig(String hostname, short port, String password) {
         this.hostname = hostname;
         this.port = port;
         this.password = password;
+    }
+
+    public RedisConfig() {
+        this("localhost", (short) 6379, "");
     }
 
     public String getHostname() {
         return this.hostname;
     }
 
-    public int getPort() {
+    public short getPort() {
         return this.port;
     }
 

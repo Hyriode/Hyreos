@@ -4,7 +4,7 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApiBlocking;
 import fr.hyriode.hyreos.api.HyreosAPI;
-import fr.hyriode.hyreos.config.InfluxDBConfig;
+import fr.hyriode.hyreos.config.nested.InfluxConfig;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,7 +22,7 @@ public class InfluxDB {
 
     private final InfluxDBClient client;
 
-    public InfluxDB(InfluxDBConfig config) {
+    public InfluxDB(InfluxConfig config) {
         this.client = InfluxDBClientFactory.create(config.getUrl(), config.getToken().toCharArray(), config.getOrganization(), config.getBucket());
 
         try {

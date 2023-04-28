@@ -1,10 +1,10 @@
 package fr.hyriode.hyreos.config;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
-import fr.hyriode.hyreos.util.IOUtil;
+import fr.hyriode.hyreos.config.nested.InfluxConfig;
+import fr.hyriode.hyreos.config.nested.RedisConfig;
+import fr.hyriode.hyreos.util.YamlLoader;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -14,51 +14,38 @@ import java.nio.file.Paths;
  */
 public class HyreosConfig {
 
-    @SerializedName("redis")
-    private final RedisConfig redisConfig;
-    @SerializedName("influxdb")
-    private final InfluxDBConfig influxDBConfig;
+    public static final Path CONFIG_FILE = Paths.get("config.yml");
 
-    public HyreosConfig(RedisConfig redisConfig, InfluxDBConfig influxDBConfig) {
-        this.redisConfig = redisConfig;
-        this.influxDBConfig = influxDBConfig;
-    }
+    private final RedisConfig redis;
+    private final InfluxConfig influx;
 
-    public HyreosConfig() {
-        this(new RedisConfig("127.0.0.1", 6379, ""), new InfluxDBConfig("http://127.0.0.1:8086", "", "", ""));
+    public HyreosConfig(RedisConfig redis, InfluxConfig influx) {
+        this.redis = redis;
+        this.influx = influx;
     }
 
     public RedisConfig getRedisConfig() {
-        return this.redisConfig;
+        return this.redis;
     }
 
-    public InfluxDBConfig getInfluxDBConfig() {
-        return this.influxDBConfig;
+    public InfluxConfig getInfluxDBConfig() {
+        return this.influx;
     }
 
     public static HyreosConfig load() {
         System.out.println("Loading configuration...");
 
-        final Path configFile = Paths.get("config.json");
-        final Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .serializeNulls()
-                .create();
-
-        final String json = IOUtil.loadFile(configFile);
-
-        if (!json.equals("")) {
-            return gson.fromJson(json, HyreosConfig.class);
+        if (Files.exists(CONFIG_FILE)) {
+            return YamlLoader.load(CONFIG_FILE, HyreosConfig.class);
         } else {
-            final HyreosConfig config = new HyreosConfig();
+            final HyreosConfig config = new HyreosConfig(new RedisConfig(), new InfluxConfig());
 
-            IOUtil.save(configFile, gson.toJson(config));
+            YamlLoader.save(CONFIG_FILE, config);
 
-            System.err.println("Please fill configuration file!");
+            System.err.println("Please fill configuration file before continue!");
             System.exit(0);
 
             return config;
         }
     }
-
 }

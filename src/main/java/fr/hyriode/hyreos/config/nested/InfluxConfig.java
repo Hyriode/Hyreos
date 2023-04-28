@@ -1,21 +1,25 @@
-package fr.hyriode.hyreos.config;
+package fr.hyriode.hyreos.config.nested;
 
 /**
  * Created by AstFaster
  * on 14/10/2022 at 19:47
  */
-public class InfluxDBConfig {
+public class InfluxConfig {
 
     private final String url;
     private final String token;
     private final String organization;
     private final String bucket;
 
-    public InfluxDBConfig(String url, String token, String organization, String bucket) {
+    public InfluxConfig(String url, String token, String organization, String bucket) {
         this.url = url;
         this.token = token;
         this.organization = organization;
         this.bucket = bucket;
+    }
+
+    public InfluxConfig() {
+        this("http://127.0.0.1:8086", "", "", "");
     }
 
     public String getUrl() {

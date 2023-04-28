@@ -40,8 +40,8 @@ publishing {
     repositories {
         maven {
             credentials {
-                username System.getenv('USERNAME')
-                password System.getenv('TOKEN')
+                username System.getenv('GITHUB_USERNAME')
+                password System.getenv('GITHUB_TOKEN')
             }
             name = "Hyreos_maven"
             url = "https://maven.pkg.github.com/Hyriode/Hyreos"
@@ -50,5 +50,5 @@ publishing {
 }
 
 dependencies {
-    api 'redis.clients:jedis:4.3.0'
+    api 'redis.clients:jedis:4.3.2'
 }
