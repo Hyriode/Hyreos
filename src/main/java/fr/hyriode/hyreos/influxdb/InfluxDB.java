@@ -16,10 +16,9 @@ import java.util.function.Consumer;
  */
 public class InfluxDB {
 
-    private final ExecutorService executor = Executors.newCachedThreadPool();
+    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
     private final WriteApiBlocking writeApi;
-
     private final InfluxDBClient client;
 
     public InfluxDB(InfluxConfig config) {
@@ -27,9 +26,9 @@ public class InfluxDB {
 
         try {
             if (this.client.ping()) {
-                System.out.println("Connection set between " + HyreosAPI.NAME + " and InfluxDB.");
+                System.out.println("Connection set between " + HyreosAPI.NAME + " and InfluxDB");
             } else {
-                System.err.println("Couldn't connect to InfluxDB.");
+                System.err.println("Couldn't connect to InfluxDB");
             }
         } catch (Exception ignored) {
             System.exit(-1);
@@ -38,12 +37,12 @@ public class InfluxDB {
         this.writeApi = this.client.getWriteApiBlocking();
     }
 
-    public void write(Consumer<WriteApiBlocking> writeApiConsumer) {
-        this.executor.execute(() -> writeApiConsumer.accept(writeApi));
+    public void write(Consumer<WriteApiBlocking> consumer) {
+        EXECUTOR_SERVICE.execute(() -> consumer.accept(this.writeApi));
     }
 
     public void stop() {
-        this.executor.shutdown();
+        EXECUTOR_SERVICE.shutdown();
         this.client.close();
     }
 

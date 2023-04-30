@@ -1,7 +1,12 @@
 package fr.hyriode.hyreos.api.metrics;
 
 import fr.hyriode.hyreos.api.HyreosAPI;
-import fr.hyriode.hyreos.api.protocol.packet.HyreosMetricPacket;
+import fr.hyriode.hyreos.api.protocol.HyreosMessaging;
+import fr.hyriode.hyreos.api.data.service.ServiceType;
+import fr.hyriode.hyreos.api.protocol.request.players.PlayersPerServiceRequest;
+
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by AstFaster
@@ -21,12 +26,15 @@ public class HyreosMetricsManager {
         this.hyreosAPI = hyreosAPI;
     }
 
-    /**
-     * Write a {@linkplain HyreosMetric metric}
-     *
-     * @param metric The metric to write
-     */
-    public void writeMetric(HyreosMetric metric) {
-        this.hyreosAPI.getMessaging().sendPacket(new HyreosMetricPacket(metric));
+    public void start() {
+        Executors.newScheduledThreadPool(8).scheduleAtFixedRate(() -> {
+            final HyreosMessaging messaging = this.hyreosAPI.getMessaging();
+
+            messaging.sendPacket(new PlayersPerServiceRequest(ServiceType.LIMBO));
+            messaging.sendPacket(new PlayersPerServiceRequest(ServiceType.PROXY));
+            messaging.sendPacket(new PlayersPerServiceRequest(ServiceType.SERVER));
+
+            //messaging.sendPacket(new PlayersPerGameRequest());
+        }, 60, 60, TimeUnit.SECONDS);
     }
 }

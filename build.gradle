@@ -39,5 +39,6 @@ dependencies {
     implementation project(':API')
     implementation 'jline:jline:2.14.6'
     implementation 'org.yaml:snakeyaml:2.0'
+    implementation 'org.slf4j:slf4j-api:2.0.7'
     implementation "com.influxdb:influxdb-client-java:6.6.0"
 }

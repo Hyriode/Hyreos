@@ -16,19 +16,21 @@ public class HyreosConfig {
 
     public static final Path CONFIG_FILE = Paths.get("config.yml");
 
-    private final RedisConfig redis;
-    private final InfluxConfig influx;
+    private RedisConfig redis;
+    private InfluxConfig influx;
 
     public HyreosConfig(RedisConfig redis, InfluxConfig influx) {
         this.redis = redis;
         this.influx = influx;
     }
 
+    private HyreosConfig() {}
+
     public RedisConfig getRedisConfig() {
         return this.redis;
     }
 
-    public InfluxConfig getInfluxDBConfig() {
+    public InfluxConfig getInfluxConfig() {
         return this.influx;
     }
 

@@ -1,13 +1,11 @@
 package fr.hyriode.hyreos;
 
 import fr.hyriode.hyreos.api.HyreosAPI;
-import fr.hyriode.hyreos.api.metrics.HyreosMetric;
-import fr.hyriode.hyreos.api.protocol.packet.HyreosMetricPacket;
-import fr.hyriode.hyreos.api.protocol.packet.HyreosPacket;
+import fr.hyriode.hyreos.api.protocol.packet.HyreosResponsePacket;
 import fr.hyriode.hyreos.config.HyreosConfig;
 import fr.hyriode.hyreos.influxdb.InfluxDB;
 import fr.hyriode.hyreos.logger.ColoredLogger;
-import fr.hyriode.hyreos.receiver.MetricReceiver;
+import fr.hyriode.hyreos.receiver.HyreosResponseReceiver;
 import fr.hyriode.hyreos.redis.Redis;
 
 import java.nio.file.Paths;
@@ -38,12 +36,13 @@ public class Hyreos {
 
         this.config = HyreosConfig.load();
         this.redis = new Redis(this.config.getRedisConfig());
-        this.influxDB = new InfluxDB(this.config.getInfluxDBConfig());
+        this.influxDB = new InfluxDB(this.config.getInfluxConfig());
         this.hyreosAPI = new HyreosAPI(this.redis.getPool());
         this.hyreosAPI.start();
 
-        this.hyreosAPI.getMessaging().registerReceiver(HyreosMetricPacket.class, new MetricReceiver());
+        Hyreos.get().getAPI().getMessaging().registerReceiver(HyreosResponsePacket.class, new HyreosResponseReceiver());
 
+        this.hyreosAPI.getMetricsManager().start();
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
     }
 
@@ -57,6 +56,10 @@ public class Hyreos {
 
     public static Hyreos get() {
         return instance;
+    }
+
+    public HyreosAPI getAPI() {
+        return this.hyreosAPI;
     }
 
     public HyreosConfig getConfig() {
