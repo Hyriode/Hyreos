@@ -37,8 +37,8 @@ public class Hyreos {
         this.config = HyreosConfig.load();
         this.redis = new Redis(this.config.getRedisConfig());
         this.influxDB = new InfluxDB(this.config.getInfluxConfig());
-        this.hyreosAPI = new HyreosAPI(this.redis.getPool());
-        this.hyreosAPI.start();
+        this.hyreosAPI = new HyreosAPI();
+        this.hyreosAPI.start(this.redis.getPool());
 
         Hyreos.get().getAPI().getMessaging().registerReceiver(HyreosResponsePacket.class, new HyreosResponseReceiver());
 

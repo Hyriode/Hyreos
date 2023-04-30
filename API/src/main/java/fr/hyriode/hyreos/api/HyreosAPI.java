@@ -2,10 +2,7 @@ package fr.hyriode.hyreos.api;
 
 import fr.hyriode.hyreos.api.metrics.HyreosMetricsManager;
 import fr.hyriode.hyreos.api.protocol.HyreosMessaging;
-import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
-
-import java.util.function.Consumer;
 
 /**
  * Created by AstFaster
@@ -21,25 +18,13 @@ public class HyreosAPI {
     /** The {@linkplain HyreosMetricsManager metrics' manager} */
     private HyreosMetricsManager metricsManager;
 
-    /** The required {@link JedisPool} to use {@link redis.clients.jedis.JedisPubSub JedisPubSub} system */
-    private final JedisPool jedisPool;
-
-    /**
-     * Main constructor of {@link HyreosAPI}
-     *
-     * @param jedisPool The required {@link JedisPool}
-     */
-    public HyreosAPI(JedisPool jedisPool) {
-        this.jedisPool = jedisPool;
-    }
-
     /**
      * Start the API internal systems
      */
-    public void start() {
+    public void start(JedisPool pool) {
         System.out.println("Starting " + NAME + " API...");
 
-        this.messaging = new HyreosMessaging(this);
+        this.messaging = new HyreosMessaging(this, pool);
         this.metricsManager = new HyreosMetricsManager(this);
     }
 
@@ -50,19 +35,6 @@ public class HyreosAPI {
         System.out.println("Stopping " + NAME + " API...");
 
         this.messaging.stop();
-    }
-
-    /**
-     * Query a {@linkplain Jedis Redis resource} to perform action
-     *
-     * @param consumer The consumer that will be triggered after accessing to the {@linkplain Jedis resource}
-     */
-    public void processWithRedis(Consumer<Jedis> consumer) {
-        try (final Jedis jedis = this.jedisPool.getResource()) {
-            if (jedis != null) {
-                consumer.accept(jedis);
-            }
-        }
     }
 
     /**

@@ -4,10 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import fr.hyriode.hyreos.api.HyreosAPI;
 import fr.hyriode.hyreos.api.protocol.packet.HyreosPacket;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPubSub;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Created by AstFaster
@@ -30,20 +33,23 @@ public class HyreosMessaging {
 
     /** The {@link HyreosAPI} instance */
     private final HyreosAPI hyreosAPI;
+    private final JedisPool pool;
 
     /**
      * Constructor of {@link HyreosMessaging}
      *
      * @param hyreosAPI The {@link HyreosAPI} instance
      */
-    public HyreosMessaging(HyreosAPI hyreosAPI) {
+    public HyreosMessaging(HyreosAPI hyreosAPI, JedisPool pool) {
         this.hyreosAPI = hyreosAPI;
+        this.pool = pool;
+
         this.receivers = new ArrayList<>();
         this.subscriber = new Subscriber();
         this.subscriberThread = new Thread(() -> {
             System.out.println("Starting " + HyreosAPI.NAME + " messaging...");
 
-            this.hyreosAPI.processWithRedis(jedis -> jedis.subscribe(this.subscriber, CHANNEL));
+            this.process(jedis -> jedis.subscribe(this.subscriber, CHANNEL));
         });
         this.subscriberThread.start();
     }
@@ -61,13 +67,21 @@ public class HyreosMessaging {
         }
     }
 
+    public void process(Consumer<Jedis> consumer) {
+        try (final Jedis jedis = this.pool.getResource()) {
+            if (jedis != null) {
+                consumer.accept(jedis);
+            }
+        }
+    }
+
     /**
      * Send a packet
      *
      * @param packet The {@link HyreosPacket}
      */
     public void sendPacket(HyreosPacket packet) {
-        this.hyreosAPI.processWithRedis(jedis -> jedis.publish(CHANNEL, this.encodePacket(packet)));
+        this.process(jedis -> jedis.publish(CHANNEL, this.encodePacket(packet)));
     }
 
     /**
