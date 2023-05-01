@@ -1,3 +1,3 @@
-package fr.hyriode.hyreos.api.data;
+package fr.hyriode.hyreos.api;
 
 public interface IHyreosMetric {}

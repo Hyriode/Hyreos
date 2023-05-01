@@ -3,9 +3,12 @@ package fr.hyriode.hyreos.influxdb;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApiBlocking;
-import fr.hyriode.hyreos.api.HyreosAPI;
+import com.influxdb.client.domain.WritePrecision;
+import fr.hyriode.hyreos.Hyreos;
+import fr.hyriode.hyreos.api.IHyreosMetric;
 import fr.hyriode.hyreos.config.nested.InfluxConfig;
 
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
@@ -26,7 +29,7 @@ public class InfluxDB {
 
         try {
             if (this.client.ping()) {
-                System.out.println("Connection set between " + HyreosAPI.NAME + " and InfluxDB");
+                System.out.println("Connection set between " + Hyreos.NAME + " and InfluxDB");
             } else {
                 System.err.println("Couldn't connect to InfluxDB");
             }
@@ -39,6 +42,16 @@ public class InfluxDB {
 
     public void write(Consumer<WriteApiBlocking> consumer) {
         EXECUTOR_SERVICE.execute(() -> consumer.accept(this.writeApi));
+    }
+
+    public void sendMetrics(IHyreosMetric metric) {
+        this.write(api -> api.writeMeasurement(WritePrecision.MS, metric));
+    }
+
+    public void sendMetrics(Set<IHyreosMetric> metrics) {
+        for (final IHyreosMetric metric : metrics) {
+            this.sendMetrics(metric);
+        }
     }
 
     public void stop() {

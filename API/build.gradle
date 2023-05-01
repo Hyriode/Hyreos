@@ -50,6 +50,5 @@ publishing {
 }
 
 dependencies {
-    api 'redis.clients:jedis:4.3.2'
     api 'com.influxdb:influxdb-client-core:6.8.0'
 }

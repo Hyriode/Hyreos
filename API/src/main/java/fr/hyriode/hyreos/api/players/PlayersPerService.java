@@ -1,9 +1,9 @@
-package fr.hyriode.hyreos.api.data.players;
+package fr.hyriode.hyreos.api.players;
 
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;
-import fr.hyriode.hyreos.api.data.IHyreosMetric;
-import fr.hyriode.hyreos.api.data.service.ServiceType;
+import fr.hyriode.hyreos.api.IHyreosMetric;
+import fr.hyriode.hyreos.api.service.ServiceType;
 
 import java.time.Instant;
 

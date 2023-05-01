@@ -1,6 +1,4 @@
-package fr.hyriode.hyreos.api.data.money;
-
-import fr.hyriode.api.money.IHyriMoneyManager;
+package fr.hyriode.hyreos.api.money;
 
 public enum MoneyType {
 
@@ -20,13 +18,5 @@ public enum MoneyType {
     @Override
     public String toString() {
         return this.name;
-    }
-
-    public String getRedisKey() {
-        if (this == MoneyType.HYRIS) {
-            return IHyriMoneyManager.HYRIS_REDIS_KEY;
-        }
-
-        return IHyriMoneyManager.HYODES_REDIS_KEY;
     }
 }

@@ -35,10 +35,23 @@ shadowJar {
     }
 }
 
+repositories {
+    maven {
+        name = 'HyriAPI_maven'
+        url = 'https://maven.pkg.github.com/Hyriode/HyriAPI/'
+
+        credentials {
+            username System.getenv("GITHUB_USERNAME")
+            password System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
 dependencies {
     implementation project(':API')
     implementation 'jline:jline:2.14.6'
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'fr.hyriode:hyriapi-app:1.5.2-SNAPSHOT'
     implementation "com.influxdb:influxdb-client-java:6.6.0"
 }
