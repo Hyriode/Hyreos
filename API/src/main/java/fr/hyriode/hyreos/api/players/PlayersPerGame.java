@@ -16,31 +16,13 @@ public class PlayersPerGame implements IHyreosMetric {
     @Column(name = "players")
     private final int players;
     @Column(timestamp = true)
-    private Instant time;
+    private final Instant time;
 
     public PlayersPerGame(String game, String type, int players) {
         this.game = game;
         this.type = type;
         this.players = players;
-    }
 
-    public String getGame() {
-        return this.game;
-    }
-
-    public String getType() {
-        return this.type;
-    }
-
-    public int getPlayers() {
-        return this.players;
-    }
-
-    public Instant getTime() {
-        return this.time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
+        this.time = Instant.now();
     }
 }

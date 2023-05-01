@@ -17,31 +17,13 @@ public class PlayersPerService implements IHyreosMetric {
     @Column(name = "players")
     private final int players;
     @Column(timestamp = true)
-    private Instant time;
+    private final Instant time;
 
     public PlayersPerService(ServiceType type, String name, int players) {
         this.type = type;
         this.name = name;
         this.players = players;
-    }
 
-    public ServiceType getType() {
-        return this.type;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getPlayers() {
-        return this.players;
-    }
-
-    public Instant getTime() {
-        return this.time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
+        this.time = Instant.now();
     }
 }

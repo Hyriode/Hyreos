@@ -14,26 +14,12 @@ public class PlayersPerRank implements IHyreosMetric {
     @Column(name = "players")
     private final int players;
     @Column(timestamp = true)
-    private Instant time;
+    private final Instant time;
 
     public PlayersPerRank(PlayerRank rank, int players) {
         this.rank = rank;
         this.players = players;
-    }
 
-    public PlayerRank getRank() {
-        return this.rank;
-    }
-
-    public int getPlayers() {
-        return this.players;
-    }
-
-    public Instant getTime() {
-        return this.time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
+        this.time = Instant.now();
     }
 }

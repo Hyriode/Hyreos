@@ -6,27 +6,17 @@ import fr.hyriode.hyreos.api.data.IHyreosMetric;
 
 import java.time.Instant;
 
-@Measurement(name = "hyriplus_players")
-public class HyriPlusPlayers implements IHyreosMetric {
+@Measurement(name = "connected_players")
+public class ConnectedPlayers implements IHyreosMetric {
 
     @Column(name = "players")
     private final long players;
     @Column(timestamp = true)
     private Instant time;
 
-    public HyriPlusPlayers(long players) {
+    public ConnectedPlayers(long players) {
         this.players = players;
-    }
 
-    public long getPlayers() {
-        return this.players;
-    }
-
-    public Instant getTime() {
-        return this.time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
+        this.time = Instant.now();
     }
 }

@@ -32,7 +32,7 @@ public class ResourcesPerService implements IHyreosMetric {
     private final long memoryLimit;
 
     @Column(timestamp = true)
-    private Instant time;
+    private final Instant time;
 
     public ResourcesPerService(ServiceType type, String name, long totalCpuUsage, List<Long> cpuUsages, long systemCpuUsage, long availableCpus, long memoryUsage, long memoryMax, long memoryLimit) {
         this.type = type;
@@ -44,49 +44,7 @@ public class ResourcesPerService implements IHyreosMetric {
         this.memoryUsage = memoryUsage;
         this.memoryMax = memoryMax;
         this.memoryLimit = memoryLimit;
-    }
 
-    public ServiceType getType() {
-        return this.type;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public long getTotalCpuUsage() {
-        return this.totalCpuUsage;
-    }
-
-    public List<Long> getCpuUsages() {
-        return this.cpuUsages;
-    }
-
-    public long getSystemCpuUsage() {
-        return this.systemCpuUsage;
-    }
-
-    public long getAvailableCpus() {
-        return this.availableCpus;
-    }
-
-    public long getMemoryUsage() {
-        return this.memoryUsage;
-    }
-
-    public long getMemoryMax() {
-        return this.memoryMax;
-    }
-
-    public long getMemoryLimit() {
-        return this.memoryLimit;
-    }
-
-    public Instant getTime() {
-        return this.time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
+        this.time = Instant.now();
     }
 }

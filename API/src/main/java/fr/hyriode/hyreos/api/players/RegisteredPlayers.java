@@ -12,21 +12,11 @@ public class RegisteredPlayers implements IHyreosMetric {
     @Column(name = "players")
     private final long players;
     @Column(timestamp = true)
-    private Instant time;
+    private final Instant time;
 
     public RegisteredPlayers(long players) {
         this.players = players;
-    }
 
-    public long getPlayers() {
-        return this.players;
-    }
-
-    public Instant getTime() {
-        return this.time;
-    }
-
-    public void setTime(Instant time) {
-        this.time = time;
+        this.time = Instant.now();
     }
 }
