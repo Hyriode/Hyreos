@@ -1,8 +1,8 @@
 package fr.hyriode.hyreos.config;
 
+import fr.hyriode.api.config.MongoDBConfig;
+import fr.hyriode.api.config.RedisConfig;
 import fr.hyriode.hyreos.config.nested.InfluxConfig;
-import fr.hyriode.hyreos.config.nested.RedisConfig;
-import fr.hyriode.hyreos.util.YamlLoader;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,10 +17,12 @@ public class HyreosConfig {
     public static final Path CONFIG_FILE = Paths.get("config.yml");
 
     private RedisConfig redis;
+    private MongoDBConfig mongo;
     private InfluxConfig influx;
 
-    public HyreosConfig(RedisConfig redis, InfluxConfig influx) {
+    public HyreosConfig(RedisConfig redis, MongoDBConfig mongo, InfluxConfig influx) {
         this.redis = redis;
+        this.mongo = mongo;
         this.influx = influx;
     }
 
@@ -28,6 +30,10 @@ public class HyreosConfig {
 
     public RedisConfig getRedisConfig() {
         return this.redis;
+    }
+
+    public MongoDBConfig getMongoConfig() {
+        return this.mongo;
     }
 
     public InfluxConfig getInfluxConfig() {
@@ -40,7 +46,7 @@ public class HyreosConfig {
         if (Files.exists(CONFIG_FILE)) {
             return YamlLoader.load(CONFIG_FILE, HyreosConfig.class);
         } else {
-            final HyreosConfig config = new HyreosConfig(new RedisConfig(), new InfluxConfig());
+            final HyreosConfig config = new HyreosConfig(new RedisConfig(), new MongoDBConfig(), new InfluxConfig());
 
             YamlLoader.save(CONFIG_FILE, config);
 

@@ -1,4 +1,4 @@
-package fr.hyriode.hyreos.util;
+package fr.hyriode.hyreos.config;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;

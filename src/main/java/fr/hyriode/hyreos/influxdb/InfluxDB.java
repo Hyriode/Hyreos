@@ -4,13 +4,12 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
+import fr.hyriode.api.HyriAPI;
 import fr.hyriode.hyreos.Hyreos;
 import fr.hyriode.hyreos.api.IHyreosMetric;
 import fr.hyriode.hyreos.config.nested.InfluxConfig;
 
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 /**
@@ -18,8 +17,6 @@ import java.util.function.Consumer;
  * on 14/10/2022 at 19:40
  */
 public class InfluxDB {
-
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
     private final WriteApiBlocking writeApi;
     private final InfluxDBClient client;
@@ -41,7 +38,7 @@ public class InfluxDB {
     }
 
     public void write(Consumer<WriteApiBlocking> consumer) {
-        EXECUTOR_SERVICE.execute(() -> consumer.accept(this.writeApi));
+        HyriAPI.get().getScheduler().runAsync(() -> consumer.accept(this.writeApi));
     }
 
     public void sendMetrics(IHyreosMetric metric) {
@@ -55,8 +52,6 @@ public class InfluxDB {
     }
 
     public void stop() {
-        EXECUTOR_SERVICE.shutdown();
         this.client.close();
     }
-
 }

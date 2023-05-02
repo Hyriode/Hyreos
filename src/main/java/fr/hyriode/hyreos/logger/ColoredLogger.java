@@ -6,6 +6,8 @@ import org.fusesource.jansi.Ansi;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -29,12 +31,12 @@ public class ColoredLogger extends Logger {
             this.consoleReader.setExpandEvents(false);
 
             final FileHandler fileHandler = new FileHandler(file.toString());
-            fileHandler.setFormatter(new ConciseFormatter(this, false));
+            fileHandler.setFormatter(new ConciseFormatter(false));
             this.addHandler(fileHandler);
 
             final Writer consoleHandler = new Writer(consoleReader);
             consoleHandler.setLevel(Level.INFO);
-            consoleHandler.setFormatter(new ConciseFormatter(this, true));
+            consoleHandler.setFormatter(new ConciseFormatter(true));
             this.addHandler(consoleHandler);
 
         } catch (IOException e) {
@@ -58,17 +60,20 @@ public class ColoredLogger extends Logger {
     }
 
     public static void printHeaderMessage() {
-        final String message = "$$\\   $$\\                                                   \n" +
-                "$$ |  $$ |                                                  \n" +
-                "$$ |  $$ |$$\\   $$\\  $$$$$$\\   $$$$$$\\   $$$$$$\\   $$$$$$$\\ \n" +
-                "$$$$$$$$ |$$ |  $$ |$$  __$$\\ $$  __$$\\ $$  __$$\\ $$  _____|\n" +
-                "$$  __$$ |$$ |  $$ |$$ |  \\__|$$$$$$$$ |$$ /  $$ |\\$$$$$$\\  \n" +
-                "$$ |  $$ |$$ |  $$ |$$ |      $$   ____|$$ |  $$ | \\____$$\\ \n" +
-                "$$ |  $$ |\\$$$$$$$ |$$ |      \\$$$$$$$\\ \\$$$$$$  |$$$$$$$  |\n" +
-                "\\__|  \\__| \\____$$ |\\__|       \\_______| \\______/ \\_______/ \n" +
-                "          $$\\   $$ |                                        \n" +
-                "          \\$$$$$$  |                                        \n" +
-                "           \\______/                                         ";
+        final String message = 
+                """
+                        $$\\   $$\\                                                   \s
+                        $$ |  $$ |                                                  \s
+                        $$ |  $$ |$$\\   $$\\  $$$$$$\\   $$$$$$\\   $$$$$$\\   $$$$$$$\\ \s
+                        $$$$$$$$ |$$ |  $$ |$$  __$$\\ $$  __$$\\ $$  __$$\\ $$  _____|\s
+                        $$  __$$ |$$ |  $$ |$$ |  \\__|$$$$$$$$ |$$ /  $$ |\\$$$$$$\\  \s
+                        $$ |  $$ |$$ |  $$ |$$ |      $$   ____|$$ |  $$ | \\____$$\\ \s
+                        $$ |  $$ |\\$$$$$$$ |$$ |      \\$$$$$$$\\ \\$$$$$$  |$$$$$$$  |\s
+                        \\__|  \\__| \\____$$ |\\__|       \\_______| \\______/ \\_______/ \s
+                                  $$\\   $$ |                                        \s
+                                  \\$$$$$$  |                                        \s
+                                   \\______/                                         
+                """;
 
         System.out.println(message.replaceAll("\\$", "█"));
     }
@@ -83,11 +88,11 @@ public class ColoredLogger extends Logger {
 
     private static class ConciseFormatter extends Formatter {
 
-        private final Logger logger;
+        private final DateFormat date = new SimpleDateFormat("HH:mm:ss");
+
         private final boolean colored;
 
-        public ConciseFormatter(Logger logger, boolean colored) {
-            this.logger = logger;
+        public ConciseFormatter(boolean colored) {
             this.colored = colored;
         }
 
@@ -96,10 +101,7 @@ public class ColoredLogger extends Logger {
         public String format(LogRecord record) {
             final StringBuilder formatted = new StringBuilder();
 
-            formatted.append("[")
-                    .append(this.logger.getName())
-                    .append("] ")
-                    .append("[");
+            formatted.append("[").append(date.format(record.getMillis())).append("] [");
             this.appendLevel(formatted, record.getLevel());
             formatted.append("] ")
                     .append(this.formatMessage(record))
@@ -245,7 +247,7 @@ public class ColoredLogger extends Logger {
 
         @Override
         public void flush() throws IOException {
-            final String contents = this.toString(StandardCharsets.UTF_8.name());
+            final String contents = this.toString(StandardCharsets.UTF_8);
 
             super.reset();
 
@@ -253,7 +255,5 @@ public class ColoredLogger extends Logger {
                 this.logger.logp(level, "", "", contents.substring(0, contents.length() - 1));
             }
         }
-
     }
-
 }

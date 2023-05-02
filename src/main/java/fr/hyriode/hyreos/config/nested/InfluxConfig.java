@@ -11,15 +11,15 @@ public class InfluxConfig {
     private final String organization;
     private final String bucket;
 
+    public InfluxConfig() {
+        this("http://127.0.0.1:8086", "", "", "");
+    }
+
     public InfluxConfig(String url, String token, String organization, String bucket) {
         this.url = url;
         this.token = token;
         this.organization = organization;
         this.bucket = bucket;
-    }
-
-    public InfluxConfig() {
-        this("http://127.0.0.1:8086", "", "", "");
     }
 
     public String getUrl() {
@@ -37,5 +37,4 @@ public class InfluxConfig {
     public String getBucket() {
         return this.bucket;
     }
-
 }
