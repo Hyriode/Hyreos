@@ -33,8 +33,8 @@ public class Hyreos {
         new HyriAPIImpl(new HyriAPIConfig.Builder()
                 .withRedisConfig(config.getRedisConfig())
                 .withMongoDBConfig(config.getMongoConfig())
-                .withDevEnvironment(true)
-                .withHyggdrasil(false)
+                .withDevEnvironment(false)
+                .withHyggdrasil(true)
                 .build(), Hyreos.NAME);
 
         this.influxDB = new InfluxDB(config.getInfluxConfig());
