@@ -1,8 +1,8 @@
 package fr.hyriode.hyreos.metrics.handler;
 
 import fr.hyriode.api.player.IHyriPlayer;
-import fr.hyriode.hylios.api.MetricsRedisKey;
 import fr.hyriode.hyreos.Hyreos;
+import fr.hyriode.hyreos.api.HyreosRedisKey;
 import fr.hyriode.hyreos.metrics.data.IHyreosMetric;
 import fr.hyriode.hyreos.metrics.data.money.CirculatingMoney;
 import fr.hyriode.hyreos.metrics.data.money.MoneyType;
@@ -17,20 +17,20 @@ import java.util.Set;
 public class MoneyMetricsHandler implements IMetricHandler {
 
     private static final IMetricProcessor HYRIS = () -> {
-        final long hyris = Fetcher.fetch(MetricsRedisKey.HYRIS);
+        final long hyris = Fetcher.fetch(HyreosRedisKey.HYRIS);
 
         return Set.of(new CirculatingMoney(MoneyType.HYRIS, hyris));
     };
     private static final IMetricProcessor HYODES = () -> {
-        final long hyodes = Fetcher.fetch(MetricsRedisKey.HYODES);
+        final long hyodes = Fetcher.fetch(HyreosRedisKey.HYODES);
 
         return Set.of(new CirculatingMoney(MoneyType.HYODES, hyodes));
     };
 
     @Override
     public boolean isInitialized() {
-        final boolean hyris = Fetcher.exists(MetricsRedisKey.HYRIS);
-        final boolean hyodes = Fetcher.exists(MetricsRedisKey.HYODES);
+        final boolean hyris = Fetcher.exists(HyreosRedisKey.HYRIS);
+        final boolean hyodes = Fetcher.exists(HyreosRedisKey.HYODES);
 
         return hyris && hyodes;
     }
@@ -46,8 +46,8 @@ public class MoneyMetricsHandler implements IMetricHandler {
             hyodes += player.getHyodes().getAmount();
         }
 
-        Fetcher.update(MetricsRedisKey.HYRIS, hyris);
-        Fetcher.update(MetricsRedisKey.HYODES, hyodes);
+        Fetcher.update(HyreosRedisKey.HYRIS, hyris);
+        Fetcher.update(HyreosRedisKey.HYODES, hyodes);
     }
 
     @Override

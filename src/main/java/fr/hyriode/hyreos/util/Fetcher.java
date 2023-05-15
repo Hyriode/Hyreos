@@ -1,12 +1,11 @@
 package fr.hyriode.hyreos.util;
 
 import fr.hyriode.api.HyriAPI;
-import fr.hyriode.hylios.api.MetricsRedisKey;
-import fr.hyriode.hyreos.metrics.processor.IMetricHandler;
+import fr.hyriode.hyreos.api.HyreosRedisKey;
 
 public class Fetcher {
 
-    public static boolean exists(MetricsRedisKey key) {
+    public static boolean exists(HyreosRedisKey key) {
         return Fetcher.exists(key.getKey());
     }
 
@@ -14,7 +13,7 @@ public class Fetcher {
         return HyriAPI.get().getRedisProcessor().get(jedis -> jedis.exists(key));
     }
 
-    public static void update(MetricsRedisKey key, long value) {
+    public static void update(HyreosRedisKey key, long value) {
         Fetcher.update(key.getKey(), value);
     }
 
@@ -22,7 +21,7 @@ public class Fetcher {
         HyriAPI.get().getRedisProcessor().processAsync(jedis -> jedis.set(key, String.valueOf(value)));
     }
 
-    public static long fetch(MetricsRedisKey key) {
+    public static long fetch(HyreosRedisKey key) {
         return Fetcher.fetch(key.getKey());
     }
 

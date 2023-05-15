@@ -3,8 +3,8 @@ package fr.hyriode.hyreos.metrics.handler;
 import fr.hyriode.api.HyriAPI;
 import fr.hyriode.api.player.IHyriPlayer;
 import fr.hyriode.api.rank.PlayerRank;
-import fr.hyriode.hylios.api.MetricsRedisKey;
 import fr.hyriode.hyreos.Hyreos;
+import fr.hyriode.hyreos.api.HyreosRedisKey;
 import fr.hyriode.hyreos.metrics.data.IHyreosMetric;
 import fr.hyriode.hyreos.metrics.data.players.ConnectedPlayers;
 import fr.hyriode.hyreos.metrics.data.players.HyriPlusPlayers;
@@ -27,7 +27,7 @@ public class PlayersMetricsHandler implements IMetricHandler {
         final Set<IHyreosMetric> metrics = new HashSet<>();
 
         for (final PlayerRank rank : PlayerRank.values()) {
-            final long count = Fetcher.fetch(String.format(MetricsRedisKey.RANKS.getKey(), rank.getName()));
+            final long count = Fetcher.fetch(String.format(HyreosRedisKey.RANKS.getKey(), rank.getName()));
 
             metrics.add(new PlayersPerRank(rank, count));
         }
@@ -35,12 +35,12 @@ public class PlayersMetricsHandler implements IMetricHandler {
         return metrics;
     };
     private static final IMetricProcessor HYRIPLUS_PLAYERS = () -> {
-        final long count = Fetcher.fetch(MetricsRedisKey.HYRI_PLUS);
+        final long count = Fetcher.fetch(HyreosRedisKey.HYRI_PLUS);
 
         return Set.of(new HyriPlusPlayers(count));
     };
     private static final IMetricProcessor REGISTERED_PLAYERS = () -> {
-        final long count = Fetcher.fetch(MetricsRedisKey.REGISTERED_PLAYERS);
+        final long count = Fetcher.fetch(HyreosRedisKey.REGISTERED_PLAYERS);
 
         return Set.of(new RegisteredPlayers(count));
     };
@@ -49,11 +49,11 @@ public class PlayersMetricsHandler implements IMetricHandler {
     public boolean isInitialized() {
         boolean ranks = true;
         for (final PlayerRank rank : PlayerRank.values()) {
-            ranks &= Fetcher.exists(String.format(MetricsRedisKey.RANKS.getKey(), rank.getName()));
+            ranks &= Fetcher.exists(String.format(HyreosRedisKey.RANKS.getKey(), rank.getName()));
         }
 
-        final boolean hyriPlus = Fetcher.exists(MetricsRedisKey.HYRI_PLUS);
-        final boolean registered = Fetcher.exists(MetricsRedisKey.REGISTERED_PLAYERS);
+        final boolean hyriPlus = Fetcher.exists(HyreosRedisKey.HYRI_PLUS);
+        final boolean registered = Fetcher.exists(HyreosRedisKey.REGISTERED_PLAYERS);
 
         return ranks && hyriPlus && registered;
     }
@@ -80,13 +80,13 @@ public class PlayersMetricsHandler implements IMetricHandler {
         }
 
         for (final PlayerRank rank : PlayerRank.values()) {
-            final String key = String.format(MetricsRedisKey.RANKS.getKey(), rank.getName());
+            final String key = String.format(HyreosRedisKey.RANKS.getKey(), rank.getName());
 
             Fetcher.update(key, ranks.get(rank));
         }
 
-        Fetcher.update(MetricsRedisKey.HYRI_PLUS, hyriPlus);
-        Fetcher.update(MetricsRedisKey.REGISTERED_PLAYERS, registered);
+        Fetcher.update(HyreosRedisKey.HYRI_PLUS, hyriPlus);
+        Fetcher.update(HyreosRedisKey.REGISTERED_PLAYERS, registered);
     }
 
     @Override

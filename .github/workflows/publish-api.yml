@@ -1,11 +1,9 @@
 name: Publish CI
 
-on:
-  push:
+on: [ push ]
 
 jobs:
-  build:
-
+  publish:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,7 +21,7 @@ jobs:
       - name: Publish to GitHub Packages
         run: |
           cd API
-          gradle publish
+          gradle publish -PbuildNumber=${{ github.run_number }} -PcommitSha=${SHORT_SHA}
         env:
           GITHUB_USERNAME: ${{ github.actor }}
           GITHUB_TOKEN: ${{ secrets.TOKEN }}

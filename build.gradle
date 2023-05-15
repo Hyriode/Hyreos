@@ -27,11 +27,6 @@ compileJava {
     options.encoding = 'UTF-8'
 }
 
-configurations.all {
-    // Check for updates every build
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
-
 shadowJar {
     configurations = [project.configurations.runtimeClasspath]
     archiveVersion.set('')
@@ -56,6 +51,10 @@ dependencies {
     implementation 'jline:jline:2.14.6'
     implementation 'org.yaml:snakeyaml:2.0'
     implementation 'org.slf4j:slf4j-api:2.0.7'
-    implementation 'fr.hyriode:hyriapi-app:1.5.2-SNAPSHOT'
     implementation "com.influxdb:influxdb-client-java:6.6.0"
+
+    implementation('fr.hyriode:hyriapi-app:1.5.2-SNAPSHOT') {
+        exclude group: "fr.hyriode", module: "hyreos-api"
+    }
+    implementation project(":API")
 }
