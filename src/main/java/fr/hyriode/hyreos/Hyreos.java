@@ -4,12 +4,11 @@ import fr.hyriode.api.HyriAPI;
 import fr.hyriode.api.impl.application.HyriAPIImpl;
 import fr.hyriode.api.impl.application.config.HyriAPIConfig;
 import fr.hyriode.hyreos.config.HyreosConfig;
-import fr.hyriode.hyreos.influxdb.InfluxDB;
-import fr.hyriode.hyreos.logger.ColoredLogger;
-import fr.hyriode.hyreos.metrics.MetricsHandler;
+import fr.hyriode.hyreos.influx.InfluxDB;
+import fr.hyriode.hyreos.metrics.MetricsManager;
+import fr.hyriode.hyreos.util.logger.ColoredLogger;
 
 import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by AstFaster
@@ -21,7 +20,8 @@ public class Hyreos {
     private static Hyreos instance;
 
     private ColoredLogger logger;
-    private InfluxDB influxDB;
+    private InfluxDB influx;
+    private MetricsManager metrics;
 
     public void start() {
         instance = this;
@@ -31,38 +31,41 @@ public class Hyreos {
 
         final HyreosConfig config = HyreosConfig.load();
         new HyriAPIImpl(new HyriAPIConfig.Builder()
-                .withRedisConfig(config.getRedisConfig())
-                .withMongoDBConfig(config.getMongoConfig())
+                .withRedisConfig(config.redis())
+                .withMongoDBConfig(config.mongo())
                 .withDevEnvironment(false)
                 .withHyggdrasil(true)
                 .build(), Hyreos.NAME);
 
-        this.influxDB = new InfluxDB(config.getInfluxConfig());
+        this.influx = new InfluxDB(config.influx());
 
         System.out.println("Setting up metrics handler...");
-        final MetricsHandler handler = new MetricsHandler();
-        handler.start();
+        this.metrics = new MetricsManager();
+        this.metrics.start();
 
-        HyriAPI.get().getScheduler().schedule(handler::handle, 60, 60, TimeUnit.SECONDS);
-
+        HyriAPI.get().getScheduler().runAsync(() -> this.metrics.initialize());
         Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
     }
 
     public void stop() {
         System.out.println("Stopping " + Hyreos.NAME + "...");
 
-        this.influxDB.stop();
+        this.influx.stop();
     }
 
     public static Hyreos get() {
         return instance;
     }
 
-    public InfluxDB getInfluxDB() {
-        return this.influxDB;
-    }
-
     public ColoredLogger getLogger() {
         return this.logger;
+    }
+
+    public InfluxDB getInflux() {
+        return this.influx;
+    }
+
+    public MetricsManager getMetrics() {
+        return this.metrics;
     }
 }

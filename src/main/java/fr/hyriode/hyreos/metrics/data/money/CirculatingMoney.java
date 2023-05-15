@@ -1,13 +1,13 @@
-package fr.hyriode.hyreos.api.money;
+package fr.hyriode.hyreos.metrics.data.money;
 
 import com.influxdb.annotations.Column;
 import com.influxdb.annotations.Measurement;
-import fr.hyriode.hyreos.api.IHyreosMetric;
+import fr.hyriode.hyreos.metrics.data.IHyreosMetric;
 
 import java.time.Instant;
 
-@Measurement(name = "emitted_currencies")
-public class EmittedCurrencies implements IHyreosMetric {
+@Measurement(name = "circulating_money")
+public class CirculatingMoney implements IHyreosMetric {
 
     @Column(name = "money_type", tag = true)
     private final MoneyType type;
@@ -16,7 +16,7 @@ public class EmittedCurrencies implements IHyreosMetric {
     @Column(timestamp = true)
     private final Instant time;
 
-    public EmittedCurrencies(MoneyType type, long amount) {
+    public CirculatingMoney(MoneyType type, long amount) {
         this.type = type;
         this.amount = amount;
 

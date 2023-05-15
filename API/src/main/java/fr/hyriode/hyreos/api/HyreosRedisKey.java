@@ -5,9 +5,13 @@ public enum HyreosRedisKey {
     HYRIS("money:hyris"),
     HYODES("money:hyodes"),
 
+    RANKS("ranks:%s"),
     HYRI_PLUS("ranks:hyriplus"),
 
-    REGISTERED_PLAYERS("players:registered");
+    REGISTERED_PLAYERS("players:registered"),
+
+    HYRIAPI_PACKETS("packets:hyriapi"),
+    HYGGDRASIL_PACKETS("packets:hyggdrasil");
 
     private final String key;
 

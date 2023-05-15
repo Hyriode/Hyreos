@@ -1,4 +1,4 @@
-package fr.hyriode.hyreos.api.service;
+package fr.hyriode.hyreos.metrics.data.service;
 
 public enum ServiceType {
 

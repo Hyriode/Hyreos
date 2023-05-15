@@ -1,15 +1,14 @@
-package fr.hyriode.hyreos.influxdb;
+package fr.hyriode.hyreos.influx;
 
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.InfluxDBClientFactory;
 import com.influxdb.client.WriteApiBlocking;
 import com.influxdb.client.domain.WritePrecision;
 import fr.hyriode.api.HyriAPI;
-import fr.hyriode.hyreos.Hyreos;
-import fr.hyriode.hyreos.api.IHyreosMetric;
 import fr.hyriode.hyreos.config.nested.InfluxConfig;
+import fr.hyriode.hyreos.metrics.data.IHyreosMetric;
+import fr.hyriode.hyreos.util.References;
 
-import java.util.Set;
 import java.util.function.Consumer;
 
 /**
@@ -26,7 +25,7 @@ public class InfluxDB {
 
         try {
             if (this.client.ping()) {
-                System.out.println("Connection set between " + Hyreos.NAME + " and InfluxDB");
+                System.out.println("Connection set between " + References.NAME + " and InfluxDB");
             } else {
                 System.err.println("Couldn't connect to InfluxDB");
             }
@@ -41,14 +40,8 @@ public class InfluxDB {
         HyriAPI.get().getScheduler().runAsync(() -> consumer.accept(this.writeApi));
     }
 
-    public void sendMetrics(IHyreosMetric metric) {
+    public void sendMetric(IHyreosMetric metric) {
         this.write(api -> api.writeMeasurement(WritePrecision.MS, metric));
-    }
-
-    public void sendMetrics(Set<IHyreosMetric> metrics) {
-        for (final IHyreosMetric metric : metrics) {
-            this.sendMetrics(metric);
-        }
     }
 
     public void stop() {

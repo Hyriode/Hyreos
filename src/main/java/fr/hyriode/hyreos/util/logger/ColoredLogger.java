@@ -1,4 +1,4 @@
-package fr.hyriode.hyreos.logger;
+package fr.hyriode.hyreos.util.logger;
 
 import jline.console.ConsoleReader;
 import org.fusesource.jansi.Ansi;
@@ -60,20 +60,19 @@ public class ColoredLogger extends Logger {
     }
 
     public static void printHeaderMessage() {
-        final String message = 
+        final String message =
                 """
-                        $$\\   $$\\                                                   \s
-                        $$ |  $$ |                                                  \s
-                        $$ |  $$ |$$\\   $$\\  $$$$$$\\   $$$$$$\\   $$$$$$\\   $$$$$$$\\ \s
-                        $$$$$$$$ |$$ |  $$ |$$  __$$\\ $$  __$$\\ $$  __$$\\ $$  _____|\s
-                        $$  __$$ |$$ |  $$ |$$ |  \\__|$$$$$$$$ |$$ /  $$ |\\$$$$$$\\  \s
-                        $$ |  $$ |$$ |  $$ |$$ |      $$   ____|$$ |  $$ | \\____$$\\ \s
-                        $$ |  $$ |\\$$$$$$$ |$$ |      \\$$$$$$$\\ \\$$$$$$  |$$$$$$$  |\s
-                        \\__|  \\__| \\____$$ |\\__|       \\_______| \\______/ \\_______/ \s
-                                  $$\\   $$ |                                        \s
-                                  \\$$$$$$  |                                        \s
-                                   \\______/                                         
-                """;
+                        $$\\   $$\\           $$\\ $$\\                    \s
+                        $$ |  $$ |          $$ |\\__|                   \s
+                        $$ |  $$ |$$\\   $$\\ $$ |$$\\  $$$$$$\\   $$$$$$$\\\s
+                        $$$$$$$$ |$$ |  $$ |$$ |$$ |$$  __$$\\ $$  _____|
+                        $$  __$$ |$$ |  $$ |$$ |$$ |$$ /  $$ |\\$$$$$$\\ \s
+                        $$ |  $$ |$$ |  $$ |$$ |$$ |$$ |  $$ | \\____$$\\\s
+                        $$ |  $$ |\\$$$$$$$ |$$ |$$ |\\$$$$$$  |$$$$$$$  |
+                        \\__|  \\__| \\____$$ |\\__|\\__| \\______/ \\_______/\s
+                                  $$\\   $$ |                           \s
+                                  \\$$$$$$  |                           \s
+                                   \\______/                            \s""";
 
         System.out.println(message.replaceAll("\\$", "█"));
     }
@@ -247,7 +246,7 @@ public class ColoredLogger extends Logger {
 
         @Override
         public void flush() throws IOException {
-            final String contents = this.toString(StandardCharsets.UTF_8);
+            final String contents = this.toString(StandardCharsets.UTF_8.name());
 
             super.reset();
 
@@ -255,5 +254,7 @@ public class ColoredLogger extends Logger {
                 this.logger.logp(level, "", "", contents.substring(0, contents.length() - 1));
             }
         }
+
     }
+
 }

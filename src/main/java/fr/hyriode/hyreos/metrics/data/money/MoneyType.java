@@ -1,4 +1,4 @@
-package fr.hyriode.hyreos.api.money;
+package fr.hyriode.hyreos.metrics.data.money;
 
 public enum MoneyType {
 

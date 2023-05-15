@@ -1,4 +1,4 @@
-package fr.hyriode.hyreos.logger;
+package fr.hyriode.hyreos.util.logger;
 
 public enum LogColor {
 
